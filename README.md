@@ -6,4 +6,4 @@ group-specific random terms, in a hierarchical Bayesian framework. Posterior sam
 ## Installation
 After installing `devtools`, run 
 
-`devtools::install_github("nwfsc-timeseries/tvvarss")`
+`devtools::install_github("ebuhle/CJStan")`
