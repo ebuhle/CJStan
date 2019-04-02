@@ -3,14 +3,8 @@ Type: Package
 Title: Multilevel Bayesian mark-recapture modeling with Hamiltonian Monte Carlo sampling in Stan
 Version: 0.0.1
 Date: 2019-04-01
-Author: @R: as.person(c(
-    "Eric Buhle <eric.buhle@noaa.gov> [aut, cre]"
-  ))
-Description:
-An R package for fitting mark-recapture models, including the Cormack-Jolly-Seber model and its extensions with
-random group-specific parameters, in a hierarchical Bayesian framework. Posterior samples are drawn by Hamiltonian Monte Carlo in 
-[Stan](https://mc-stan.org/) using rstan.
-
+Author: Eric Buhle <eric.buhle@noaa.gov>
+Description: An R package for fitting mark-recapture models, including the Cormack-Jolly-Seber model and its extensions with random group-specific parameters, in a hierarchical Bayesian framework. Posterior samples are drawn by Hamiltonian Monte Carlo in Stan using rstan.
 License: GPL-3.0
 Biarch: true
 Depends: 
@@ -19,8 +13,8 @@ Imports:
     methods,
     Rcpp (>= 0.12.0),
     rstan (>= 2.18.1),
-    rstantools (>= 1.5.1.9000)
-    shinystan
+    rstantools (>= 1.5.1.9000),
+    shinystan,
     loo
 LinkingTo: 
     BH (>= 1.66.0),
@@ -29,3 +23,4 @@ LinkingTo:
     rstan (>= 2.18.1),
     StanHeaders (>= 2.18.0)
 Encoding: UTF-8
+RoxygenNote: 6.1.1
