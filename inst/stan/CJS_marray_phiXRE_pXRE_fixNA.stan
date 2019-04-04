@@ -34,19 +34,6 @@ functions {
     }
     return chi[last_capture];
   }
-
-  // row_vector prob_uncaptured(int T, row_vector p, row_vector phi) {
-  //   row_vector[T] chi;
-  //   
-  //   chi[T] = 1.0;
-  //   for (t in 1:(T - 1)) 
-  //   {
-  //     int t_curr = T - t;
-  //     int t_next = t_curr + 1;
-  //     chi[t_curr] = (1 - phi[t_curr]) + phi[t_curr] * (1 - p[t_next]) * chi[t_next];
-  //   }
-  //   return chi;
-  // }
 }
 
 data {
@@ -67,8 +54,8 @@ transformed data {
   int<lower=1> K_p;                     // number of covariates for p
   int<lower=1> J_phi;                   // number of groups for phi
   int<lower=1> J_p;                     // number of groups for p
-  int<lower=0,upper=1> random_phi[T-1]; // include random effects for phi[t]?
-  int<lower=0,upper=1> random_p[T];     // include random effects for p[t]?
+  vector<lower=0,upper=1>[T-1] random_phi; // include random effects for phi[t]?
+  vector<lower=0,upper=1>[T] random_p;     // include random effects for p[t]?
   int<lower=0,upper=T> first[M];        // first capture occasion
   int<lower=0,upper=T> last[M];         // last capture occasion
   int<lower=0,upper=T-1> last_minus_first[M];  // duh
@@ -83,7 +70,6 @@ transformed data {
     random_phi[t] = min(group_phi[,t]) == max(group_phi[,t]);
   for(t in 1:T)
     random_p[t] = min(group_p[,t]) == max(group_p[,t]);
-    
   
   for (m in 1:M)
   {
@@ -145,46 +131,19 @@ transformed parameters {
   {
     // if(group_phi[m,t] == 0)  // special code: fix survival to 0 and detection to 1
     //   phi[m,t] = 0;
-    if(random_phi[t])
-      phi[,t] = inv_logit(X * beta[,t] + sigma[t] * zeta[group_phi[,t],t]);
-    else
-      phi[,t] = inv_logit(X * beta[,t]);
+    // else
+      phi[,t] = inv_logit(X * beta[,t] + random_phi[t] * sigma[t] * zeta[group_phi[,t],t]);
   }
   
   for(t in 1:T)
   {
     // if(group_p[m,t] == 0)
     //   p[m,t] = 1;
-    if(random_p[t])
-      p[,t] = inv_logit(X * b[,t] + s[t] * z[group_p[,t],t]);
-    else
-      p[,t] = inv_logit(X * b[,t]);
+    // else
+      p[,t] = inv_logit(X * b[,t] + random_p[t] * s[t] * z[group_p[,t],t]);
   }
-  
-  // for(m in 1:M)
-  // {
-  //   for(t in 1:(T-1))
-  //   {
-  //     if(group_phi[m,t] == 0)  // special code: fix survival to 0 and detection to 1
-  //       phi[m,t] = 0;
-  //     else if(random_phi[t])
-  //       phi[m,t] = inv_logit(X[m,] * beta[,t] + sigma[t] * zeta[group_phi[m,t],t]);
-  //     else
-  //       phi[m,t] = inv_logit(X[m,] * beta[,t]);
-  //   }
-  // 
-  //   for(t in 1:T)
-  //   {
-  //     if(group_p[m,t] == 0)
-  //       p[m,t] = 1;
-  //     else if(random_p[t])
-  //       p[m,t] = inv_logit(X[m,] * b[,t] + s[t] * z[group_p[m,t],t]);
-  //     else
-  //       p[m,t] = inv_logit(X[m,] * b[,t]);
-  //   }
-  // }
-  
-  // Likelihood of capture history, marginalized over discrete latent states
+
+  // Likelihood of capture history
   LL = rep_vector(0,M);
   
   for(m in 1:M) 
@@ -199,8 +158,6 @@ transformed parameters {
     }
     chi[m] = prob_uncaptured(last[m], p[m,], phi[m,]);
     LL[m] += n[m] * log(chi[m]);   // Pr[not detected after last[m]]
-    // chi[m,] = prob_uncaptured(T, p[m,], phi[m,]);
-    // LL[m] += n[m] * log(chi[m,last[m]]);   // Pr[not detected after last[m]]
   }
 }
 
