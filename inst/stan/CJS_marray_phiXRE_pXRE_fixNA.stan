@@ -42,9 +42,11 @@ data {
   int<lower=1> K;                   // total number of covariates
   matrix[M,K] X;                    // covariates (first column is 1 for intercept)
   int<lower=0,upper=1> indX_phi[K,T-1]; // use covariate k for phi[t]?
-  int<lower=0> group_phi[M,T-1];    // phi group IDs for each unique capture history
+  int<lower=1> group_phi[M,T-1];    // phi group IDs for each unique capture history
+  vector<lower=0,upper=1>[M] fix_phi0[T-1]; // fix phi[m,t] to zero?
   int<lower=0,upper=1> indX_p[K,T]; // use covariate k for p[t]?
-  int<lower=0> group_p[M,T];        // p group IDs for each unique capture history
+  int<lower=1> group_p[M,T];        // p group IDs for each unique capture history
+  vector<lower=0,upper=1>[M] fix_p1[T]; // fix p[m,t] to 1?
   int<lower=0,upper=1> y[M,T];      // y[m,t]: history m captured at t
   int<lower=1> n[M];                // n[m]: number of individuals with capture history y[m,]
 }
@@ -67,9 +69,9 @@ transformed data {
   
   // If only one group for a particular phi[t] or p[t], don't use random effects
   for(t in 1:(T-1))
-    random_phi[t] = min(group_phi[,t]) == max(group_phi[,t]);
+    random_phi[t] = min(group_phi[,t]) < max(group_phi[,t]);
   for(t in 1:T)
-    random_p[t] = min(group_p[,t]) == max(group_p[,t]);
+    random_p[t] = min(group_p[,t]) < max(group_p[,t]);
   
   for (m in 1:M)
   {
@@ -127,21 +129,12 @@ transformed parameters {
   }
   
   // Hierarchical logistic regression for phi and p
+  // Fix phi to zero and p to 1 where specified
   for(t in 1:(T-1))
-  {
-    // if(group_phi[m,t] == 0)  // special code: fix survival to 0 and detection to 1
-    //   phi[m,t] = 0;
-    // else
-      phi[,t] = inv_logit(X * beta[,t] + random_phi[t] * sigma[t] * zeta[group_phi[,t],t]);
-  }
-  
+    phi[,t] = inv_logit(X * beta[,t] + random_phi[t] * sigma[t] * zeta[group_phi[,t],t]) .* (1 - fix_phi0[t]);
+
   for(t in 1:T)
-  {
-    // if(group_p[m,t] == 0)
-    //   p[m,t] = 1;
-    // else
-      p[,t] = inv_logit(X * b[,t] + random_p[t] * s[t] * z[group_p[,t],t]);
-  }
+    p[,t] = inv_logit(X * b[,t] + random_p[t] * s[t] * z[group_p[,t],t]) .* (1 - fix_p1[t]) + fix_p1[t];
 
   // Likelihood of capture history
   LL = rep_vector(0,M);

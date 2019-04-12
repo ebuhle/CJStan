@@ -482,7 +482,7 @@ public:
                 current_statement_begin__ = 70;
                 stan::model::assign(random_phi, 
                             stan::model::cons_list(stan::model::index_uni(t), stan::model::nil_index_list()), 
-                            logical_eq(min(stan::model::rvalue(group_phi, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(t), stan::model::nil_index_list())), "group_phi")),max(stan::model::rvalue(group_phi, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(t), stan::model::nil_index_list())), "group_phi"))), 
+                            logical_lt(min(stan::model::rvalue(group_phi, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(t), stan::model::nil_index_list())), "group_phi")),max(stan::model::rvalue(group_phi, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(t), stan::model::nil_index_list())), "group_phi"))), 
                             "assigning variable random_phi");
             }
             current_statement_begin__ = 71;
@@ -490,7 +490,7 @@ public:
                 current_statement_begin__ = 72;
                 stan::model::assign(random_p, 
                             stan::model::cons_list(stan::model::index_uni(t), stan::model::nil_index_list()), 
-                            logical_eq(min(stan::model::rvalue(group_p, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(t), stan::model::nil_index_list())), "group_p")),max(stan::model::rvalue(group_p, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(t), stan::model::nil_index_list())), "group_p"))), 
+                            logical_lt(min(stan::model::rvalue(group_p, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(t), stan::model::nil_index_list())), "group_p")),max(stan::model::rvalue(group_p, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(t), stan::model::nil_index_list())), "group_p"))), 
                             "assigning variable random_p");
             }
             current_statement_begin__ = 74;
