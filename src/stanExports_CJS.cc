@@ -2,12 +2,12 @@
 
 #include <Rcpp.h>
 using namespace Rcpp ;
-#include "stanExports_CJS_marray.h"
+#include "stanExports_CJS.h"
 
-RCPP_MODULE(stan_fit4CJS_marray_mod) {
+RCPP_MODULE(stan_fit4CJS_mod) {
 
 
-    class_<rstan::stan_fit<stan_model, boost::random::ecuyer1988> >("model_CJS_marray")
+    class_<rstan::stan_fit<stan_model, boost::random::ecuyer1988> >("model_CJS")
 
     .constructor<SEXP,SEXP,SEXP>()
 
@@ -27,5 +27,6 @@ RCPP_MODULE(stan_fit4CJS_marray_mod) {
     .method("num_pars_unconstrained", &rstan::stan_fit<stan_model, boost::random::ecuyer1988> ::num_pars_unconstrained)
     .method("unconstrained_param_names", &rstan::stan_fit<stan_model, boost::random::ecuyer1988> ::unconstrained_param_names)
     .method("constrained_param_names", &rstan::stan_fit<stan_model, boost::random::ecuyer1988> ::constrained_param_names)
+    .method("standalone_gqs", &rstan::stan_fit<stan_model, boost::random::ecuyer1988> ::standalone_gqs)
     ;
 }

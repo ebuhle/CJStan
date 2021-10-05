@@ -21,18 +21,18 @@ functions {
     return 0;
   }
   
-  real prob_uncaptured(int last_capture, row_vector p, row_vector phi) {
+  real prob_uncaptured(int last, row_vector p, row_vector phi) {
     int T = num_elements(p);
     row_vector[T] chi;
     
     chi[T] = 1.0;
-    for (t in 1:(T - last_capture)) 
+    for (t in 1:(T - last)) 
     {
       int t_curr = T - t;
       int t_next = t_curr + 1;
       chi[t_curr] = (1 - phi[t_curr]) + phi[t_curr] * (1 - p[t_next]) * chi[t_next];
     }
-    return chi[last_capture];
+    return chi[last];
   }
 }
 

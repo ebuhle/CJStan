@@ -7,12 +7,12 @@
 using namespace Rcpp;
 
 
-RcppExport SEXP _rcpp_module_boot_stan_fit4CJS_marray_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4CJS_marray_phiXRE_pXRE_fixNA_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4CJS_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4CJS_phiXRE_pXRE_fixNA_mod();
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_rcpp_module_boot_stan_fit4CJS_marray_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4CJS_marray_mod, 0},
-    {"_rcpp_module_boot_stan_fit4CJS_marray_phiXRE_pXRE_fixNA_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4CJS_marray_phiXRE_pXRE_fixNA_mod, 0},
+    {"_rcpp_module_boot_stan_fit4CJS_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4CJS_mod, 0},
+    {"_rcpp_module_boot_stan_fit4CJS_phiXRE_pXRE_fixNA_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4CJS_phiXRE_pXRE_fixNA_mod, 0},
     {NULL, NULL, 0}
 };
 
