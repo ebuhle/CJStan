@@ -1,4 +1,4 @@
-// Cormack-Jolly-Seber Model (m-array data format) with covariates and
+// Cormack-Jolly-Seber Model (aggregated array data format) with covariates and
 // random effects on time-specific survival and capture probabilities 
 // (possibly different grouping variables for each phi and p)
 // as well as a code that indicates phi = 0, p = 1
@@ -52,21 +52,16 @@ data {
 }
 
 transformed data {
-  int<lower=1> K_phi;                   // number of covariates for phi
-  int<lower=1> K_p;                     // number of covariates for p
-  int<lower=1> J_phi;                   // number of groups for phi
-  int<lower=1> J_p;                     // number of groups for p
+  int<lower=1> K_phi = sum(to_array_1d(indX_phi));  // number of covariates for phi
+  int<lower=1> K_p = sum(to_array_1d(indX_p));      // number of covariates for p
+  int<lower=1> J_phi = max(to_array_1d(group_phi)); // number of groups for phi
+  int<lower=1> J_p = max(to_array_1d(group_p));     // number of groups for p
   vector<lower=0,upper=1>[T-1] random_phi; // include random effects for phi[t]?
   vector<lower=0,upper=1>[T] random_p;     // include random effects for p[t]?
-  int<lower=0,upper=T> first[M];        // first capture occasion
-  int<lower=0,upper=T> last[M];         // last capture occasion
+  int<lower=0,upper=T> first[M];           // first capture occasion
+  int<lower=0,upper=T> last[M];            // last capture occasion
   int<lower=0,upper=T-1> last_minus_first[M];  // duh
-  
-  K_phi = sum(to_array_1d(indX_phi));
-  K_p = sum(to_array_1d(indX_p));
-  J_phi = max(to_array_1d(group_phi));
-  J_p = max(to_array_1d(group_p));
-  
+
   // If only one group for a particular phi[t] or p[t], don't use random effects
   for(t in 1:(T-1))
     random_phi[t] = min(group_phi[,t]) < max(group_phi[,t]);
@@ -104,27 +99,24 @@ transformed parameters {
   b = rep_matrix(0, K, T);
   
   {
-    int np_phi;
-    int np_p;
-    
-    np_phi = 1;
-    np_p = 1;
-    
+    int np_phi = 1;
+    int np_p = 1;
+
     for(k in 1:K)
     {
       for(t in 1:(T-1))
-      if(indX_phi[k,t])
-      {
-        beta[k,t] = beta_vec[np_phi];
-        np_phi += 1;
-      }
+        if(indX_phi[k,t])
+        {
+          beta[k,t] = beta_vec[np_phi];
+          np_phi += 1;
+        }
       
       for(t in 1:T)
-      if(indX_p[k,t])
-      {
-        b[k,t] = b_vec[np_p];
-        np_p += 1;
-      }
+        if(indX_p[k,t])
+        {
+          b[k,t] = b_vec[np_p];
+          np_p += 1;
+        }
     }
   }
   
@@ -150,27 +142,22 @@ transformed parameters {
       }
     }
     chi[m] = prob_uncaptured(last[m], p[m,], phi[m,]);
-    LL[m] += n[m] * log(chi[m]);   // Pr[not detected after last[m]]
+    LL[m] += n[m] * log(chi[m]);   // P(not detected after last[m])
   }
 }
 
 model {
   // Priors 
-  
-  // log Jacobian of logit transform for phi[t] intercepts
-  // implies phi[t] ~ Unif(0,1) given all covariates are at their sample means
-  target += log_inv_logit(beta_vec[1:(T-1)]) + log1m_inv_logit(beta_vec[1:(T-1)]);
+  beta_vec[1:(T-1)] ~ logistic(0,1); // phi[t] ~ U(0,1) when all covariates at sample means
   if(K_phi > T - 1)
     beta_vec[T:K_phi] ~ normal(0,3); 
   sigma ~ normal(0,3);    
-  to_vector(zeta) ~ normal(0,1);  // implies logit(phi[m,t]) ~ N(logit(mu_phi[t]), sigma);
-  // log Jacobian of logit transform for p[t] intercepts
-  // implies p[t] ~ Unif(0,1) given all covariates are at their sample means
-  target += log_inv_logit(b_vec[1:T]) + log1m_inv_logit(b_vec[1:T]);
+  to_vector(zeta) ~ normal(0,1);  // logit(phi[m,t]) ~ N(logit(mu_phi[t]), sigma);
+  b_vec[1:(T-1)] ~ logistic(0,1); // p[t] ~ U(0,1) when all covariates at sample means
   if(K_p > T)
     b_vec[(T+1):K_p] ~ normal(0,3);     
   s ~ normal(0,3); 
-  to_vector(z) ~ normal(0,1);    // implies logit(p[m,t]) ~ N(logit(mu_p[t]), s);
+  to_vector(z) ~ normal(0,1);    // logit(p[m,t]) ~ N(logit(mu_p[t]), s);
   
   // Likelihood of capture history added to log posterior
   target += sum(LL);
@@ -183,5 +170,3 @@ generated quantities {
   epsilon = diag_post_multiply(zeta, sigma);
   e = diag_post_multiply(z, s);
 }
-
-

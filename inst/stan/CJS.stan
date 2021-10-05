@@ -1,4 +1,4 @@
-// Cormack-Jolly-Seber Model (m-array data format)
+// Cormack-Jolly-Seber Model (aggregated array data format)
 
 functions {
   int first_capture(int[] y_i) {
@@ -61,13 +61,13 @@ parameters {
 }
 
 transformed parameters {
-  vector<lower=0,upper=1>[T] chi;       // chi[,t]: Pr[not captured >  t | alive at t]
+  vector<lower=0,upper=1>[T] chi;       // chi[,t]: P(not captured >  t | alive at t)
 
   chi = prob_uncaptured(T, p, phi);
 }
 
 model {
-  // implied uniform priors:
+  // implied uniform priors
   // phi ~ uniform(0,1)
   // p ~ uniform(0,1)
   
@@ -83,7 +83,7 @@ model {
         target += n[m] * bernoulli_lpmf(y[m,t] | p[t]); // observation (captured or not)
       }
     }
-    target += n[m] * log(chi[last[m]]); // Pr[not detected after last[m]]
+    target += n[m] * log(chi[last[m]]); // P(not detected after last[m])
   }
 }
 
@@ -105,6 +105,6 @@ generated quantities {
         LL[m] += n[m] * bernoulli_lpmf(y[m,t] | p[t]); // observation (captured or not)
       }
     }
-    LL[m] += n[m] * log(chi[last[m]]); // Pr[not detected after last[m]]
+    LL[m] += n[m] * log(chi[last[m]]); // P(not detected after last[m])
   }
 }
