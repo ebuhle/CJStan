@@ -149,13 +149,11 @@ transformed parameters {
 model {
   // Priors 
   beta_vec[1:(T-1)] ~ logistic(0,1); // phi[t] ~ U(0,1) when all covariates at sample means
-  if(K_phi > T - 1)
-    beta_vec[T:K_phi] ~ normal(0,3); 
+  if(K_phi > T - 1) beta_vec[T:K_phi] ~ normal(0,3); 
   sigma ~ normal(0,3);    
   to_vector(zeta) ~ normal(0,1);  // logit(phi[m,t]) ~ N(logit(mu_phi[t]), sigma);
   b_vec[1:(T-1)] ~ logistic(0,1); // p[t] ~ U(0,1) when all covariates at sample means
-  if(K_p > T)
-    b_vec[(T+1):K_p] ~ normal(0,3);     
+  if(K_p > T) b_vec[(T+1):K_p] ~ normal(0,3);     
   s ~ normal(0,3); 
   to_vector(z) ~ normal(0,1);    // logit(p[m,t]) ~ N(logit(mu_p[t]), s);
   
