@@ -1,4 +1,2 @@
-^\.travis\.yml$
-Read-and-delete-me
-^.*\.Rproj$
+^CJStan\.Rproj$
 ^\.Rproj\.user$

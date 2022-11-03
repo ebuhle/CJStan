@@ -1,5 +1,8 @@
 .Rproj.user
-*.Rproj
 .Rhistory
 .RData
 .Ruserdata
+src/*.cpp
+src/*.cc
+src/*.h
+src/*o

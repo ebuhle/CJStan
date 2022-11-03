@@ -1,26 +1,29 @@
-Package: CJStan 
-Type: Package
-Title: Multilevel Bayesian mark-recapture modeling with Hamiltonian Monte Carlo sampling in Stan
-Version: 0.0.1
-Date: 2019-04-01
-Author: Eric Buhle <eric.buhle@noaa.gov>
-Description: An R package for fitting mark-recapture models, including the Cormack-Jolly-Seber model and its extensions with random group-specific parameters, in a hierarchical Bayesian framework. Posterior samples are drawn by Hamiltonian Monte Carlo in Stan using rstan.
-License: GPL-3.0
+Package: CJStan
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: What the package does (one paragraph).
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.1
 Biarch: true
 Depends: 
     R (>= 3.4.0)
 Imports: 
     methods,
     Rcpp (>= 0.12.0),
+    RcppParallel (>= 5.0.1),
     rstan (>= 2.18.1),
-    rstantools (>= 1.5.1.9000),
-    shinystan,
-    loo
+    rstantools (>= 2.2.0)
 LinkingTo: 
     BH (>= 1.66.0),
     Rcpp (>= 0.12.0),
     RcppEigen (>= 0.3.3.3.0),
+    RcppParallel (>= 5.0.1),
     rstan (>= 2.18.1),
     StanHeaders (>= 2.18.0)
-Encoding: UTF-8
-RoxygenNote: 7.1.1
+SystemRequirements: GNU make
