@@ -5,4 +5,4 @@
 src/*.cpp
 src/*.cc
 src/*.h
-src/*o
+src/*.o
